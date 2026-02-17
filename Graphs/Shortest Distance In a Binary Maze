@@ -1,0 +1,45 @@
+class Solution {
+  public:
+    int shortestPath(vector<vector<int>> &grid, pair<int, int> source,
+                     pair<int, int> destination) {
+        // code here
+        int n=grid.size();
+        int m=grid[0].size();
+        
+        if(source.first==destination.first && source.second==destination.second) return 0;
+        
+        if(grid[source.first][source.second] == 0) 
+            return -1;
+        
+        vector<vector<int>>dist(n,vector<int>(m,INT_MAX));
+        queue<pair<int,pair<int,int>>>q;
+        
+        dist[source.first][source.second]=0;
+        
+        q.push({0,{source.first,source.second}});
+         int delr[]={-1,0,1,0};
+            int delc[]={0,1,0,-1};
+        
+        while(!q.empty()){
+            int r=q.front().second.first;
+            int c=q.front().second.second;
+            int distance=q.front().first;
+            q.pop();
+  
+            for(int i=0;i<4;i++){
+                int nrow=r+delr[i];
+                int ncol=c+delc[i];
+                
+                if(nrow>=0 && nrow<n && ncol>=0 && ncol<m && grid[nrow][ncol] == 1&&  distance+1<dist[nrow][ncol]){
+                    dist[nrow][ncol]=distance+1;
+                    if(nrow==destination.first && ncol==destination.second){
+                        return (distance+1);
+                    }
+                    q.push({distance+1,{nrow,ncol}});
+                }
+            }
+        }
+        return -1;
+        
+    }
+};
