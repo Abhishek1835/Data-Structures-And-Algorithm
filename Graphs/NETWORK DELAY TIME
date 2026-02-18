@@ -1,0 +1,45 @@
+class Solution {
+  public:
+    int findDelayTime(int V, vector<vector<int>> &edges, int src) {
+        // code here
+        vector<pair<int,int>>adj[V];
+        for(auto it:edges){
+            adj[it[0]].push_back({it[1],it[2]});
+        }
+         priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
+         pq.push({0,src});
+         
+         vector<int>time(V,INT_MAX);
+         time[src]=0;
+         
+         while(!pq.empty()){
+             int tm=pq.top().first;
+             int node=pq.top().second;
+             pq.pop();
+             
+             if(tm > time[node]) continue;
+             
+             for(auto it:adj[node]){
+                 int itnode=it.first;
+                 int itwt=it.second;
+                 
+                 if(tm+itwt<time[itnode]){
+                     time[itnode]=tm+itwt;
+                     pq.push({tm+itwt,itnode});
+                 }
+             }
+             
+         }
+         int ans=0;
+         for(int i=0;i<V;i++){
+             if(time[i]==INT_MAX) {
+                 return -1;
+             }else{
+                 ans=max(ans,time[i]);
+             }
+         }
+         
+         return ans;
+        
+    }
+};
