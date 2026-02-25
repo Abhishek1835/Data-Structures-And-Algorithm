@@ -1,0 +1,60 @@
+// User function Template for C++
+class Disjointset{
+    public:
+     vector<int>size,parent;
+   Disjointset(int n){
+       parent.resize(n);
+       size.resize(n);
+       for(int i=0;i<n;i++){
+           parent[i]=i;
+           size[i]=1;
+           
+       }
+    }
+
+   
+   int findparent(int node){
+       if(parent[node]==node) return node;
+       
+       return parent[node]= findparent(parent[node]);
+   }
+   void unionset(int u,int v){
+       int pu=findparent(u);
+       int pv=findparent(v);
+       
+       if(pu==pv) return;
+       
+       if(size[pu]<size[pv]){
+           parent[pu]=pv;
+           size[pv]+=size[pu];
+       }else{
+            parent[pv]=pu;
+           size[pu]+=size[pv];
+       }
+   }
+};
+class Solution {
+  public:
+    int Solve(int n, vector<vector<int>>& edge) {
+        // code here
+        Disjointset ds(n);
+        int extra=0;
+        for(auto it:edge){
+           int u=it[0]; //yaha 0/1 le rhe h as here pair is not given for first and second
+           int v=it[1];
+           if(ds.findparent(u)==ds.findparent(v)){
+               extra++;
+           }else{
+               ds.unionset(u,v);
+           }
+        }
+        int boss=0;
+        for(int i=0;i<n;i++){
+            if(ds.parent[i]==i) boss++;
+        }
+        int ans=boss-1;
+        if(extra>=ans) return ans;
+        return -1;
+        
+    }
+};
