@@ -1,0 +1,83 @@
+class Disjointset{
+    public:
+     vector<int>size,parent;
+   Disjointset(int n){
+       parent.resize(n);
+       size.resize(n);
+       for(int i=0;i<n;i++){
+           parent[i]=i;
+           size[i]=1;
+           
+       }
+    }
+
+   
+   int findparent(int node){
+       if(parent[node]==node) return node;
+       
+       return parent[node]= findparent(parent[node]);
+   }
+   void unionset(int u,int v){
+       int pu=findparent(u);
+       int pv=findparent(v);
+       
+       if(pu==pv) return;
+       
+       if(size[pu]<size[pv]){
+           parent[pu]=pv;
+           size[pv]+=size[pu];
+       }else{
+            parent[pv]=pu;
+           size[pu]+=size[pv];
+       }
+   }
+};
+// User function Template for C++
+class Solution {
+    private:
+    bool isvalid(int adjr,int adjc,int n,int m){
+        return(adjr>=0 && adjr<n && adjc<m && adjc>=0);
+    }
+  public:
+    vector<int> numOfIslands(int n, int m, vector<vector<int>> &operators) {
+        // code here
+        Disjointset ds(n*m);
+        int vis[n][m];
+        memset(vis,0,sizeof vis);
+        int cnt=0;
+        vector<int>ans;
+        for(auto it:operators){
+            int row=it[0];
+            int col=it[1];
+            
+            if(vis[row][col]==1){
+                ans.push_back(cnt);
+                continue;
+            }
+            vis[row][col]=1;
+            cnt++;
+            int dr[]={-1,0,1,0};
+            int dc[]={0,1,0,-1};
+            
+            for(int ind=0;ind<4;ind++){
+                int adjr=row+dr[ind];
+                int adjc=col+dc[ind];
+                
+                if(isvalid(adjr,adjc,n,m)){
+                    if(vis[adjr][adjc]==1){
+                        int nodenum=row*m+col;
+                        int adjnodenum=adjr*m+adjc;
+                        
+                        if(ds.findparent(nodenum)!=ds.findparent(adjnodenum)){
+                            cnt--;
+                            ds.unionset(nodenum,adjnodenum);
+                        }
+                    }
+                }
+            }
+            ans.push_back(cnt);
+        }
+        
+        return ans;
+    }
+};
